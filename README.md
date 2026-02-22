@@ -75,7 +75,9 @@ ai-hcp-crm-assistant/
 
 # bash
 cd frontend
+
 npm install
+
 npm run dev
 
 
