@@ -14,14 +14,14 @@ const LogInteraction = forwardRef((props, ref) => {
         followup: "",
     });
 
-    // ✅ AI can update form
+
     useImperativeHandle(ref, () => ({
         fillForm: (data) => {
             setForm((prev) => ({ ...prev, ...data }));
         },
     }));
 
-    // ✅ manual change handler
+   
     const handleChange = (field, value) => {
         setForm((prev) => ({
             ...prev,
@@ -32,7 +32,7 @@ const LogInteraction = forwardRef((props, ref) => {
     const input = {
         width: "100%",
         padding: "10px 12px",
-        height: "42px",   // ⭐ fixed height for alignment
+        height: "42px",  
         border: "1px solid #d1d5db",
         borderRadius: "6px",
         marginTop: "6px",
@@ -51,7 +51,7 @@ const LogInteraction = forwardRef((props, ref) => {
         <div>
             <h2 style={{ marginBottom: 20 }}>Log HCP Interaction</h2>
 
-            {/* ================= Interaction Details ================= */}
+        
             <div style={card}>
                 <h4>Interaction Details</h4>
 
@@ -139,11 +139,11 @@ const LogInteraction = forwardRef((props, ref) => {
                 </div>
             </div>
 
-            {/* ================= Materials Section ================= */}
+        
             <div style={card}>
                 <h4>Materials Shared / Samples Distributed</h4>
 
-                {/* Materials Shared */}
+            
                 <div style={{ marginTop: "15px" }}>
                     <label>Materials Shared</label>
 
@@ -153,7 +153,7 @@ const LogInteraction = forwardRef((props, ref) => {
                             placeholder="Search materials..."
                         />
 
-                        {/* Search Icon */}
+                    
                         <Search
                             size={18}
                             style={{
@@ -165,7 +165,7 @@ const LogInteraction = forwardRef((props, ref) => {
                             }}
                         />
 
-                        {/* Add Button INSIDE */}
+                  
                         <button
                             style={{
                                 position: "absolute",
@@ -185,13 +185,13 @@ const LogInteraction = forwardRef((props, ref) => {
                         </button>
                     </div>
 
-                    {/* helper text */}
+                   
                     <p style={{ fontSize: "13px", color: "#6b7280", marginTop: "6px" }}>
                         No materials added yet.
                     </p>
                 </div>
 
-                {/* Samples Distributed */}
+ 
                 <div style={{ marginTop: "18px" }}>
                     <label>Samples Distributed</label>
 
@@ -201,7 +201,7 @@ const LogInteraction = forwardRef((props, ref) => {
                             placeholder="Add sample..."
                         />
 
-                        {/* Package Icon */}
+                      
                         <Package
                             size={18}
                             style={{
@@ -238,7 +238,7 @@ const LogInteraction = forwardRef((props, ref) => {
                 </div>
             </div>
 
-            {/* ================= Sentiment ================= */}
+
             <div style={card}>
                 <h4>Observed / Inferred HCP Sentiment</h4>
 
@@ -254,7 +254,7 @@ const LogInteraction = forwardRef((props, ref) => {
                 ))}
             </div>
 
-            {/* ================= Outcomes ================= */}
+        
             <div style={card}>
                 <h4>Outcomes</h4>
                 <textarea

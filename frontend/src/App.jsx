@@ -5,12 +5,12 @@ import ChatInteraction from "./ChatInteraction";
 function App() {
   const formRef = useRef();
 
-  // ✅ detect mobile/tablet
+
   const [isMobile, setIsMobile] = useState(
     window.innerWidth <= 1024
   );
 
-  // ✅ update on resize
+ 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 1024);
@@ -29,7 +29,7 @@ function App() {
         fontFamily: "Inter",
       }}
     >
-      {/* ================= FORM ================= */}
+  
       <div
         style={{
           flex: 3,
@@ -42,7 +42,7 @@ function App() {
         <LogInteraction ref={formRef} />
       </div>
 
-      {/* ================= CHAT ================= */}
+
       {!isMobile && (
         <div
           style={{
@@ -55,7 +55,7 @@ function App() {
         </div>
       )}
 
-      {/* ✅ MOBILE FLOATING CHAT */}
+
       {isMobile && <ChatInteraction formRef={formRef} />}
     </div>
   );

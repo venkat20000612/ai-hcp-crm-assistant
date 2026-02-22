@@ -4,16 +4,16 @@ export default function ChatInteraction({ formRef }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); // ✅ open/close chat
+  const [isOpen, setIsOpen] = useState(false);
 
   const chatEndRef = useRef(null);
 
-  // ✅ auto scroll
+
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  // ================= SEND MESSAGE =================
+
   const sendMessage = async () => {
     if (!input.trim()) return;
 
@@ -42,14 +42,14 @@ export default function ChatInteraction({ formRef }) {
         {
           text:
             data.summary ||
-            "✅ I've updated the interaction details.",
+            "I've updated the interaction details.",
           type: "ai",
         },
       ]);
     } catch {
       setMessages((prev) => [
         ...prev,
-        { text: "⚠️ AI error occurred.", type: "ai" },
+        { text: "Error occurred.", type: "ai" },
       ]);
     } finally {
       setIsTyping(false);
@@ -60,12 +60,12 @@ export default function ChatInteraction({ formRef }) {
     if (e.key === "Enter") sendMessage();
   };
 
-  // ================= MOBILE DETECT =================
+
   const isMobile = window.innerWidth <= 1024;
 
   return (
     <>
-      {/* ================= FLOATING BUTTON ================= */}
+
       {isMobile && !isOpen && (
         <div
           onClick={() => setIsOpen(true)}
@@ -91,7 +91,7 @@ export default function ChatInteraction({ formRef }) {
         </div>
       )}
 
-      {/* ================= CHAT WINDOW ================= */}
+
       {(isOpen || !isMobile) && (
         <div
           style={{
@@ -110,7 +110,7 @@ export default function ChatInteraction({ formRef }) {
             zIndex: 9999,
           }}
         >
-          {/* HEADER */}
+
           <div
             style={{
               padding: "12px",
@@ -138,7 +138,7 @@ export default function ChatInteraction({ formRef }) {
             )}
           </div>
 
-          {/* CHAT AREA */}
+
           <div
             style={{
               flex: 1,
@@ -185,14 +185,14 @@ export default function ChatInteraction({ formRef }) {
                   borderRadius: "14px",
                 }}
               >
-                AI is typing...
+                typing...
               </span>
             )}
 
             <div ref={chatEndRef}></div>
           </div>
 
-          {/* INPUT */}
+
           <div style={{ display: "flex", padding: "10px" }}>
             <input
               value={input}
