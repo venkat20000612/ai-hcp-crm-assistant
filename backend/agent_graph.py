@@ -9,13 +9,13 @@ from tools import (
     summary_tool
 )
 
-# ================= STATE =================
+
 class AgentState(TypedDict):
     message: str
     result: dict
 
 
-# ================= NODE =================
+
 def process_interaction(state: AgentState):
 
     message = state["message"]
@@ -28,7 +28,7 @@ def process_interaction(state: AgentState):
     }
 
 
-# ================= GRAPH =================
+
 builder = StateGraph(AgentState)
 
 builder.add_node("interaction_node", process_interaction)

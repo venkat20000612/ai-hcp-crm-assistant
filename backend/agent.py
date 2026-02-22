@@ -7,14 +7,12 @@ from langchain_groq import ChatGroq
 
 load_dotenv()
 
-
 llm = ChatGroq(
     model="llama-3.3-70b-versatile",
     api_key=os.getenv("GROQ_API_KEY")
 )
 
 conversation_memory = ""
-
 
 current_form = {
     "hcp_name": "",
@@ -27,22 +25,43 @@ current_form = {
     "followup": "",
 }
 
+# NORMALIZERS
 
+def normalize_sentiment(value):
+    if not value:
+        return ""
 
+    v = value.lower()
+
+    if "positive" in v:
+        return "Positive"
+    if "negative" in v:
+        return "Negative"
+    if "neutral" in v:
+        return "Neutral"
+
+    return value
 
 
 def normalize_time(time_str):
     if not time_str:
         return ""
 
-    try:
-        return datetime.strptime(time_str.upper(), "%I:%M %p").strftime("%H:%M")
-    except:
-        try:
-            return datetime.strptime(time_str.upper(), "%I %p").strftime("%H:%M")
-        except:
-            return time_str
+    t = time_str.strip().upper().replace(".", "")
 
+    formats = [
+        "%I:%M %p",
+        "%I %p",
+        "%H:%M"
+    ]
+
+    for fmt in formats:
+        try:
+            return datetime.strptime(t, fmt).strftime("%H:%M")
+        except:
+            continue
+
+    return time_str
 
 
 def normalize_date(date_str):
@@ -80,6 +99,7 @@ def normalize_date(date_str):
 
 
 # MAIN FUNCTION
+
 def summarize_interaction(message: str):
     global conversation_memory, current_form
 
@@ -88,36 +108,13 @@ def summarize_interaction(message: str):
     prompt = f"""
 You are a conversational AI CRM assistant.
 
-You both:
-1) Maintain structured CRM form data.
-2) Talk naturally with the user like ChatGPT.
-
 Current Form Data:
 {current_form}
 
 Conversation History:
 {conversation_memory}
 
-TASK:
-- Understand user's message.
-- Update only changed fields.
-- Respond conversationally acknowledging what changed.
-
-FIELD DEFINITIONS:
-- hcp_name → Doctor name.
-- date → Interaction date.
-- time → Interaction time.
-- topics → Discussion topics.
-- sentiment → Positive, Neutral, Negative.
-- outcomes → Meeting results.
-- followup → Next steps.
-
-RULES:
-- Be polite and natural.
-- If user corrects something, acknowledge it.
-- If user says sorry, respond kindly.
-- Explain briefly what was updated.
-- Always keep conversation human-like.
+Understand the latest message and update only changed fields.
 
 Return ONLY JSON:
 
@@ -130,20 +127,18 @@ Return ONLY JSON:
  "sentiment": "",
  "outcomes": "",
  "followup": "",
- "summary": "Natural conversational reply to the user"
+ "summary": "Natural conversational reply"
 }}
 """
 
-    # CALL LLM 
     response = llm.invoke(prompt)
     raw_output = response.content.strip()
 
-    # JSON EXTRACTION 
     match = re.search(r"\{.*\}", raw_output, re.DOTALL)
 
     if not match:
-        print("Invalid response:", raw_output)
-        return current_form
+        print("Invalid AI response:", raw_output)
+        return {**current_form, "summary": "Sorry, I couldn't understand that."}
 
     json_text = match.group(0)
 
@@ -151,28 +146,27 @@ Return ONLY JSON:
         parsed = json.loads(json_text)
     except Exception as e:
         print("JSON parse error:", e)
-        print(json_text)
-        return current_form
+        return {**current_form, "summary": "AI response parsing failed."}
 
-    # SMART UPDATE 
+    # ONLY FIELD FIXES ADDED 
     for key, value in parsed.items():
         if key in current_form and value:
 
             if key == "time":
                 value = normalize_time(value)
 
-            if key == "date":
+            elif key == "date":
                 value = normalize_date(value)
+
+            elif key == "sentiment":
+                value = normalize_sentiment(value)
 
             current_form[key] = value
 
-    # IMPORTANT — include AI reply
+    # KEEP REALTIME AI REPLY
     response_payload = {
         **current_form,
-        "summary": parsed.get(
-            "summary",
-            "I've updated the interaction details."
-        ),
+        "summary": parsed.get("summary", "Updated successfully.")
     }
 
     return response_payload
