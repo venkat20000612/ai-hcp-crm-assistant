@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+/* headings style */
+h2, h3, h4 {
+  font-weight: 600;
+}
+
+/* label styling */
+label {
+  font-size: 14px;
+  color: #374151;
+}
